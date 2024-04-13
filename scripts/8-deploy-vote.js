@@ -24,7 +24,7 @@ import {appendFileSync} from "fs";
       voting_quorum_fraction: 1,
 
       // What's the minimum # of tokens a user needs to be allowed to create a proposal?
-      proposal_token_threshold: 1,
+      proposal_token_threshold: 0,
     });
 
     console.log(

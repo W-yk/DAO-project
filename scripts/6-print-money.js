@@ -4,7 +4,7 @@ import sdk from "./1-initialize-sdk.js";
   try {
     const tokenAddress = process.env.REACT_APP_TOKEN_ADDRESS;
     const token = await sdk.getContract(tokenAddress, "token");
-    const amount = 1_000_000;
+    const amount = 5_004_000;
     await token.mint(amount);
     const totalSupply = await token.totalSupply();
 
