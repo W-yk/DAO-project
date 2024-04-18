@@ -1,10 +1,11 @@
-import { useAddress, ConnectWallet, Web3Button, useContract, useNFTBalance } from '@thirdweb-dev/react';
+import { useAddress, ConnectWallet, Web3Button, useContract, useNFTBalance, useDisconnect } from '@thirdweb-dev/react';
 import { useState, useEffect, useMemo } from 'react';
 import { AddressZero } from "@ethersproject/constants";
 
 const App = () => {
   // Use the hooks thirdweb give us.
   const address = useAddress();
+  const disconnect = useDisconnect();
   console.log("👋 Address:", address);
 
   // Initialize our Edition Drop contract
@@ -155,6 +156,8 @@ const memberList = useMemo(() => {
 if (hasClaimedNFT) {
   return (
     <div className="member-page">
+      
+      <button onClick={disconnect} className="disconnect-button">Disconnect Wallet</button>
       <h1>🍪DAO Member Page</h1>
       <p>Congratulations on being a member</p>
       <div>
