@@ -193,7 +193,7 @@ if (hasClaimedNFT) {
               setIsVoting(true);
 
               // lets get the votes from the form for the values
-              const votes = proposals.map((proposal) => {
+              const votes = proposals.filter(proposal => proposal.state === 1).map((proposal) => {
                 const voteResult = {
                   proposalId: proposal.proposalId,
                   //abstain by default
@@ -237,27 +237,6 @@ if (hasClaimedNFT) {
                       return;
                     }),
                   );
-                  try {
-                    // if any of the propsals are ready to be executed we'll need to execute them
-                    // a proposal is ready to be executed if it is in state 4
-                    await Promise.all(
-                      votes.map(async ({ proposalId }) => {
-                        // we'll first get the latest state of the proposal again, since we may have just voted before
-                        const proposal = await vote.get(proposalId);
-
-                        //if the state is in state 4 (meaning that it is ready to be executed), we'll execute the proposal
-                        if (proposal.state === 4) {
-                          return vote.execute(proposalId);
-                        }
-                      }),
-                    );
-                    // if we get here that means we successfully voted, so let's set the "hasVoted" state to true
-                    setHasVoted(true);
-                    // and log out a success message
-                    console.log('successfully voted');
-                  } catch (err) {
-                    console.error('failed to execute votes', err);
-                  }
                 } catch (err) {
                   console.error('failed to vote', err);
                 }
@@ -269,7 +248,7 @@ if (hasClaimedNFT) {
               }
             }}
           >
-            {proposals.map((proposal) => (
+            {proposals.filter(proposal => proposal.state === 1).map((proposal) => (
               <div key={proposal.proposalId} className="card">
                 <h5>{proposal.description}</h5>
                 <div>
@@ -306,6 +285,48 @@ if (hasClaimedNFT) {
             )}
           </form>
         </div>
+
+        <div>
+          <h2>History Proposals</h2>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+
+
+              // first we need to make sure the user delegates their token to vote
+              try {
+                await Promise.all(
+                    proposals.filter(proposal => proposal.state !== 1).map(async ({ proposalId }) => {
+                        // we'll first get the latest state of the proposal again, since we may have just voted before
+                        const proposal = await vote.get(proposalId);
+
+                        //if the state is in state 4 (meaning that it is ready to be executed), we'll execute the proposal
+                        if (proposal.state === 4) {
+                          console.log('executing proposal', proposalId);
+                          return vote.execute(proposalId);
+                        }
+                      }),
+                    );
+                  } catch (err) {
+                    console.error('failed to execute votes', err);
+              } 
+            }}
+          >
+            {proposals.filter(proposal => proposal.state === 3 || proposal.state === 4).map(proposal => (
+              <div key={proposal.proposalId} className="card">
+                <h5>{proposal.description}</h5>
+                <p>Status: {proposal.state === 3 ? 'Not Passed' : 'Passed'}</p>
+              </div>
+            ))}
+            <button type="submit">
+              {'Execute passed proposals'}
+            </button>
+            
+          </form>
+        </div>
+
+
       </div>
     </div>
   );

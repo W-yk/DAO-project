@@ -16,12 +16,12 @@ import {appendFileSync} from "fs";
       voting_delay_in_blocks: 0,
 
       // How long do members have to vote on a proposal when it's created?
-      // we will set it to 7 day = 6570*7 blocks
-      voting_period_in_blocks: 6570*7,
+      // we will set it to 1h  = 100 blocks
+      voting_period_in_blocks: 100,
 
       // The minimum % of the total supply that need to vote for
       // the proposal to be valid after the time for the proposal has ended.
-      voting_quorum_fraction: 1,
+      voting_quorum_fraction: 0,
 
       // What's the minimum # of tokens a user needs to be allowed to create a proposal?
       proposal_token_threshold: 0,
