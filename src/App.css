@@ -1,0 +1,6 @@
+.app-container {
+    display: flex;
+    flex-direction: column; /* Aligns children vertically */
+    min-height: 100vh; /* Takes at least the full height of the viewport */
+    justify-content: flex-start; /* Aligns children to the start of the vertical axis */
+}
