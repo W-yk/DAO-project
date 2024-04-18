@@ -69,7 +69,7 @@ useEffect(() => {
 
   const checkIfUserHasVoted = async () => {
     try {
-      const hasVoted = await vote.hasVoted(proposals[0].proposalId, address);
+      const hasVoted = await vote.hasVoted(proposals.filter(proposal => proposal.state === 1)[0].proposalId, address);
       setHasVoted(hasVoted);
       if (hasVoted) {
         console.log("🥵 User has already voted");
