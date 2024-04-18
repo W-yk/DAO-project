@@ -317,10 +317,10 @@ if (hasClaimedNFT) {
               } 
             }}
           >
-            {proposals.filter(proposal => proposal.state === 3 || proposal.state === 4).map(proposal => (
+            {proposals.filter(proposal => proposal.state !== 1).map(proposal => (
               <div key={proposal.proposalId} className="card">
                 <h5>{proposal.description}</h5>
-                <p>Status: {proposal.state === 3 ? 'Not Passed' : 'Passed'}</p>
+                <p>Status: {proposal.state === 3 ? ' ❌ Not Passed' : proposal.state === 4 ? '✔️ Passed': '🚀 Execued'}</p>
               </div>
             ))}
             <button type="submit">
