@@ -237,6 +237,10 @@ if (hasClaimedNFT) {
                       return;
                     }),
                   );
+                  // if we get here that means we successfully voted, so let's set the "hasVoted" state to true
+                  setHasVoted(true);
+                  // and log out a success message
+                  console.log('successfully voted');
                 } catch (err) {
                   console.error('failed to vote', err);
                 }
