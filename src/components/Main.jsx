@@ -171,13 +171,13 @@ const Main = () => {
 
   // Create and sort the member list by voting power in descending order
   const sortedMemberList = useMemo(() => {
-    return memberAddresses.map((address, index) => {
-      const tokens = parseFloat(memberTokenAmounts[index]?.balance.displayValue || 0);
+    return memberList.map((member, index) => {
+      const tokens = parseFloat(member.tokenAmount);
       const votingPower = (tokens / totalTokens) * 100; // calculate as a percentage
 
       return {
-        address,
-        tokens: numberFormatter.format(tokens), // format tokens with commas
+        address: member.address,
+        tokens: member.tokenAmount, // format tokens with commas
         votingPower,
       };
     }).sort((a, b) => b.votingPower - a.votingPower); // sort by voting power descending
