@@ -199,7 +199,7 @@ const Main = () => {
     return (
       <div class="max-w-5xl pt-52 pb-24 mx-auto text-center">
         <h1 class="text-80 font-bold text-white mb-6">
-          Governance Voting Portal
+        🦁FTDAO Voting Portal
         </h1>
         <h2 class="text-2xl font-semibold pb-11 text-gray-300">
           Vote with or delegate your FT tokens to <br/>help protect the integrity of the FT5004 DeFi protocol
@@ -214,7 +214,7 @@ const Main = () => {
     return (
       <div class="max-w-5xl pt-52 pb-24 mx-auto text-center">        
         <h1 class="text-80 font-bold text-white mb-6">
-          Governance Voting Portal
+        🦁FTDAO  Voting Portal
         </h1>
         <h2 class="text-2xl font-semibold pb-11 text-gray-700">
           Vote with or delegate your FT tokens to <br/>help protect the integrity of the FT5004 DeFi protocol
