@@ -35,7 +35,8 @@ const Main = () => {
   const [proposals, setProposals] = useState([]);
   const [isVoting, setIsVoting] = useState(false);
   const [hasVoted, setHasVoted] = useState(false);
-
+  const [tokenBalance, setTokenBalance] = useState(0);
+  const [myVotingPower, setVoteBalance] = useState(0);
 
   // Retrieve all our existing proposals from the contract.
   useEffect(() => {
@@ -125,6 +126,25 @@ const Main = () => {
     getAllBalances();
   }, [hasClaimedNFT, token?.history]);
 
+  
+  // obtain the total amount of tokens in the treasury using: {vote.balanceOfToken(token.address)}
+  useEffect(() => {
+    const fetchTokenBalance = async () => {
+      try {
+
+        const balance = Math.floor((await vote.balanceOfToken(tokenAddress)).value/10**18).toString();
+        const voteBalance = Math.floor((await token.balanceOf(address)).value/10**18).toString();
+        setTokenBalance(balance);
+        setVoteBalance(voteBalance);
+      } catch (error) {
+        console.error("Failed to fetch token balance:", error);
+      }
+    };
+    
+    fetchTokenBalance();
+  }, [vote]);
+
+
   // Now, we combine the memberAddresses and memberTokenAmounts into a single array
   const memberList = useMemo(() => {
     return memberAddresses.map((address) => {
@@ -181,7 +201,7 @@ const Main = () => {
         <h1 class="text-80 font-bold text-white mb-6">
           Governance Voting Portal
         </h1>
-        <h2 class="text-2xl font-semibold pb-11 text-gray-700">
+        <h2 class="text-2xl font-semibold pb-11 text-gray-300">
           Vote with or delegate your FT tokens to <br/>help protect the integrity of the FT5004 DeFi protocol
         </h2>
         <ConnectWallet />
@@ -203,51 +223,55 @@ const Main = () => {
 
         <h2 class="pt-20 mb-1 text-2xl font-semibold tracking-tighter text-center text-gray-200 lg:text-7xl md:text-6xl">
           Governance Statistics
-        </h2>      
-        <div class="container flex flex-col items-center justify-center mx-auto">
-          <table class="table-auto border-separate border-spacing-2 border border-slate-400">          
-            <thead>
+        </h2>
+        <br></br>
+        <div class="container mx-auto flex flex-col items-center justify-center py-8">
+          <table class="min-w-full divide-y divide-gray-200 shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">          
+            <thead class="bg-gray-700 text-white">
               <tr>
-                <th> FT on Hat</th>
-                <th> Active Polls</th>
-                <th> Aligned Delegates</th>
-                <th> Shadow Delegates</th>
-                <th> FT Delegates</th>
-                <th> FT in Chief</th>
+                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">FT in Treasury</th>
+                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">My Voting Power</th>
+                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Total Proposal Count</th>
+                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Active Proposal Count</th>
+                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Passed Proposal Count</th>
               </tr>
             </thead>
-            <tbody class="pt-2 value-text text-md text-gray-200 fkrr1">
+            
+            <tbody class="bg-gray-900 divide-y divide-gray-700 text-gray-200">
               <tr>
-                <td>105,678 FT</td>
-                <td class="text-center">3</td>
-                <td class="text-center">33</td>
-                <td class="text-center">52</td>
-                <td class="text-center">148,287 FT</td>
-                <td class="text-center">149,271 FT</td>
+                <td class="px-6 py-4 whitespace-nowrap">{tokenBalance}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">{myVotingPower}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">{proposals.length}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">{proposals.filter(proposal => proposal.state === 1).length}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">{proposals.filter(proposal => proposal.state === 4).length + proposals.filter(proposal => proposal.state === 7).length}</td>
               </tr>            
             </tbody>
           </table>
         </div>
 
         <div>
-          <div className="member-list" class="container flex flex-col items-center justify-center mx-auto">>
+          <div className="member-list" class="container flex flex-col items-center justify-center mx-auto">
             <h2 class="pt-40 mb-1 text-2xl font-semibold tracking-tighter text-center text-gray-200 lg:text-7xl md:text-6xl">Member List</h2>
-            <table class="table-auto border-separate border-spacing-2 border border-slate-400">
-              <thead>
+            <br></br>
+            <br></br>
+            <table class="min-w-full divide-y divide-gray-200 shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">         
+              <thead class="bg-gray-700 text-white">
                 <tr>
-                  <th class="text-white mb-6">Address</th>
-                  <th class="text-white mb-6">Token Amount</th>
-                  <th class="text-white mb-6">Voting Power</th>
-                  <th class="text-white mb-6">Delegate</th>
+                  <th class="px-3 py-3 whitespace-nowrap text-center">Address</th>
+                  <th class="px-3 py-3 whitespace-nowrap text-center">Token Amount</th>
+                  <th class="px-3 py-3 whitespace-nowrap text-center">Voting Power</th>
+                  <th class="px-3 py-3 whitespace-nowrap text-center">Delegate</th>
                 </tr>
               </thead>
-              <tbody class="pt-2 value-text text-md text-gray-200 fkrr1">
+              <tbody class="bg-gray-900 divide-y divide-gray-700 text-gray-200">
                 {sortedMemberList.map((member, index) => (
+                  //  add space between the rows
                   <tr key={index}>
-                    <td>{shortenAddress(member.address)}</td>
-                    <td>{member.tokens}</td>
-                    <td>{member.votingPower.toFixed(2) + '%'}</td>
-                    <td>
+                    <td class="px-3 py-3 whitespace-nowrap text-center">{shortenAddress(member.address)}</td>
+            
+                    <td class="px-3 py-3 whitespace-nowrap text-center">{member.tokens}</td>
+                    <td class="px-3 py-3 whitespace-nowrap text-center">{member.votingPower.toFixed(2) + '%'}</td>
+                    <td class="px-3 py-3 whitespace-nowrap text-center">
                       <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => handleDelegate(member.address)}>
                         Delegate
                       </button>
@@ -333,7 +357,7 @@ const Main = () => {
                 }}
               >
                 {proposals.filter(proposal => proposal.state === 1).map((proposal) => (
-                  <div key={proposal.proposalId} className="table-auto border-separate border-spacing-2 border border-slate-400 pt-2 value-text text-md text-gray-200 fkrr1">
+                  <div key={proposal.proposalId} className="bg-gray-800 table-auto border-separate border-spacing-2 rounded-md pt-2 value-text text-md text-gray-200 fkrr1">
                     <h5>{proposal.description}</h5>
                     <div>
                       {proposal.votes.map(({ type, label }) => (
@@ -375,7 +399,6 @@ const Main = () => {
             <h2 className="mb-4 text-2xl font-semibold tracking-tight text-center lg:text-7xl md:text-6xl">
               Historical Proposals
             </h2>
-
             <form
               className="space-y-4"
               onSubmit={async (e) => {
@@ -402,7 +425,7 @@ const Main = () => {
                   .filter(proposal => proposal.state !== 1)
                   .sort((a, b) => b.proposalId - a.proposalId)  // Sorting proposals by proposalId in descending order
                   .map(proposal => (
-                    <div className="table-auto border-separate border-spacing-2 border border-slate-400 pt-2 value-text text-md text-gray-200 fkrr1">
+                    <div  className="bg-gray-800 table-auto border-separate border-spacing-2 rounded-md pt-2 value-text text-md text-gray-200 fkrr1">
                       <h5>{`${proposal.description}`}</h5> 
                       <p>Status: {proposal.state === 3 ? ' ❌ Not Passed' : proposal.state === 4 ? '✔️ Passed': '🚀 Execued'}</p>
                     </div>
