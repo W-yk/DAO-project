@@ -443,12 +443,12 @@ const Main = () => {
         </div>
       </div>
     );
-  }
+  } 
 
   // Render mint nft screen.
   return (
-    <div className="mint-nft">
-      <h1>Mint your free 🍪DAO Membership NFT</h1>
+  <div class="max-w-5xl pt-52 pb-24 mx-auto text-center">
+      <h1 class="text-80 font-bold text-white mb-6">Mint your free 🦁FTDAO Membership NFT</h1>
       <div className="btn-hero">
         <Web3Button
           contractAddress={process.env.REACT_APP_EDITION_DROP_ADDRESS}
@@ -457,7 +457,7 @@ const Main = () => {
           }}
           onSuccess={() => {
             console.log(
-              `🌊 Successfully Minted! Check it out on OpenSea: https://testnets.opensea.io/assets/${process.env.REACT_APP_EDITION_DROP_ADDRESS()}/0`,
+              `🌊 Successfully Minted! Check it out on OpenSea:  https://testnets.opensea.io/collection/ft5004-dao-membership-5`,
             );
           }}
           onError={(error) => {
